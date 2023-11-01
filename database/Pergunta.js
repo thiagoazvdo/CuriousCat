@@ -2,11 +2,11 @@ const {DataTypes} = require('sequelize');
 const connection = require('./database');
 
 const Pergunta = connection.define('perguntas',{ //nome da tabela
-    titulo: {
+    pergunta: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    descricao: {
+    resposta: {
         type: DataTypes.STRING,
         allowNull: false
     }

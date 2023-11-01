@@ -25,9 +25,9 @@ app.use(express.static('public'));
 //rotas
 app.get("/",(req, res)=>{
     Pergunta.findAll({raw: true}).then(perguntas=>{
-        console.log(perguntas);
-    })
-    res.render("index",{
+        res.render("index",{
+            perguntas: perguntas
+        })
     });
 });
 
@@ -38,12 +38,12 @@ app.get("/perguntar",(req, res)=>{
 
 
 app.post("/salvarpergunta", (req, res)=>{
-    var titulo = req.body.titulo;
-    var descricao = req.body.descricao;
+    var pergunta = req.body.pergunta;
+    var resposta = req.body.resposta;
 
     Pergunta.create({
-        titulo: titulo,
-        descricao: descricao
+        pergunta: pergunta,
+        resposta: resposta
     }).then(()=>{
         res.redirect("/");
         });
