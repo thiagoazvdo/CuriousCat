@@ -1,25 +1,85 @@
-~ Projeto Simples de Perguntas e Respostas ~
+# Dockerizando uma Aplicação Node.js com EJS, Express, Sequelize, BodyParser e MySql2
 
-> Node.js
-> Express 
-> Sequelize
+Este é um guia passo a passo para ajudá-lo a colocar sua aplicação Node.js baseada em EJS, Express, Sequelize, BodyParser e MySql2 no Docker. Docker é uma plataforma que permite empacotar, distribuir e executar aplicativos em contêineres.
 
-*Projeto simples desenvolvido para praticar habilidades em JavaScript, Node.js, Express e Sequelize. 
-Implementando um site de perguntas e respostas, mais ou menos como a rede social CuriousCat, onde temos
-de maneira simples perguntas e respostas.
+## Pré-requisitos
+Certifique-se de ter as seguintes ferramentas instaladas em seu sistema:
 
-~ Objetivo do Projeto ~ 
-Proporcionar uma oportunidade para retomar estudos em JavaScript, Node.js e Express, além de praticar o 
-uso do Sequelize como ORM (Object-Relational Mapping) para interação com um banco de dados MySQL usando 
-o MySQL Workbench.
+- [Docker](https://docs.docker.com/get-docker/)
+- [Node.js](https://nodejs.org/) e npm
+- Editor de código de sua escolha (recomendado: [Visual Studio Code](https://code.visualstudio.com/))
 
-~ Tecnologias Utilizadas ~
-Node.js: Ambiente de execução JavaScript no lado do servidor;
-Express.js: Framework web para Node.js que simplifica o desenvolvimento de aplicativos web;
-Sequelize: ORM para Node.js que facilita a interação com bancos de dados relacionais, como o MySQL;
-MySQL Workbench: Ferramenta de design e administração para o banco de dados MySQL;
+## Passo 1: Estrutura do Projeto
+Organize seu projeto da seguinte forma:
 
-~ Funcionalidades do Projeto ~ (tópico ainda em maturação, requer ajustes)
-Formulário de Perguntas: Os usuários podem criar perguntas usando um formulário simples;
-Visualização de Perguntas e Respostas: As perguntas e respostas são exibidas na página para os usuários;
-Persistência de Dados: As perguntas e respostas são armazenadas em um banco de dados MySQL usando o Sequelize;
+
+/
+|-- src/
+|   |-- public/
+|   |-- views/
+|   |-- app.js
+|   |-- ...
+|-- Dockerfile
+|-- package.json
+|-- ...
+
+
+Certifique-se de incluir os arquivos necessários no diretório `src` para sua aplicação Node.js.
+
+## Passo 2: Configurando o Dockerfile
+
+Crie um arquivo chamado `Dockerfile` na raiz do seu projeto com o seguinte conteúdo:
+
+Dockerfile
+# Estágio 1: Construção
+FROM node:16.19.1-alpine3.17 AS builder
+
+# Criando o diretório de trabalho
+WORKDIR /usr/src
+
+# Copiando apenas o package.json e package-lock.json primeiro
+COPY package*.json ./
+
+# Instalando dependências
+RUN npm install
+
+# Estágio 2: Execução
+FROM node:16.19.1-alpine3.17
+
+# Criando o diretório de trabalho novamente
+WORKDIR /usr/src
+
+# Copiando apenas os arquivos necessários do estágio anterior
+COPY --from=builder /usr/src/node_modules /usr/src/node_modules
+
+# Copiando todos os outros arquivos
+COPY . .
+
+# Rodando a aplicação
+CMD ["node", "index.js"]
+
+Este Dockerfile usa a imagem oficial do Node.js, instala as dependências e define o comando de inicialização da aplicação.
+
+## Passo 4: Executando o Contêiner Docker
+
+Execute o seguinte comando para iniciar o contêiner:
+
+bash
+docker-compose up --build
+```
+´´´
+Lembrando que para parar a aplicação, rode:
+docker-compose down
+´´
+
+Agora sua aplicação Node.js está em execução dentro de um contêiner Docker.
+
+Lembre-se de ajustar as configurações do Sequelize para se conectar ao banco de dados MySQL no ambiente Docker, e certifique-se de que as portas e configurações do banco de dados estejam corretas.
+
+Este projeto foi desenvolvido pelos integrantes:
+
+
+Allan Dellon
+Angelo Paulino
+Bruno Andrade
+Thiago Azevedo
