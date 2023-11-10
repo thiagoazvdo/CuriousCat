@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: curiouscat
+    ports:
+      - "3307:3307" #host : conteiner
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: development
+#    restart: always
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    
+
+volumes:
+  db_data:

@@ -6,6 +6,10 @@ const Pergunta = require("./database/Pergunta");
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json()); 
 
+require('dotenv').config();
+
+console.log(process.env.DOCKER);
+
 connection
 .authenticate()
 .then(()=>{
@@ -24,7 +28,9 @@ app.use(express.static('public'));
 
 //rotas
 app.get("/",(req, res)=>{
-    Pergunta.findAll({raw: true}).then(perguntas=>{
+    Pergunta.findAll({raw: true, order:[
+        ['id', 'DESC'] //ordenando pelo id de maneira decrescente
+    ]}).then(perguntas=>{
         res.render("index",{
             perguntas: perguntas
         })
@@ -36,6 +42,18 @@ app.get("/perguntar",(req, res)=>{
         })
 })
 
+app.get("/pergunta/:id",(req, res)=>{
+    var id = req.params.id;
+    Pergunta.findOne({
+        where: {id : id}
+    }).then(pergunta => {
+        if (pergunta != undefined){
+            res.render("pergunta");
+        }else{
+            res.redirect("/");
+        }
+    })
+});
 
 app.post("/salvarpergunta", (req, res)=>{
     var pergunta = req.body.pergunta;
@@ -50,4 +68,4 @@ app.post("/salvarpergunta", (req, res)=>{
 });
 
 
-app.listen(8080,()=>{console.log("app em execução!");});
+app.listen(process.env.PORT,()=>{console.log("app em execução!");});

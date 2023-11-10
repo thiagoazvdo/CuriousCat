@@ -1,7 +1,9 @@
 const Sequelize = require('sequelize');
 
+
 const connection = new Sequelize('curiouscat','root', 'root',{
-    host: 'localhost',
+//    host: process.env.DESENVOLVIMENTO,
+    host: process.env.DOCKER,
     dialect: 'mysql'
 });
 
